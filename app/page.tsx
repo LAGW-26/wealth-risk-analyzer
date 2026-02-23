@@ -47,7 +47,7 @@ function GuardrailsSection({
   prevStep,
 }: GuardrailsProps) {
   const router = useRouter()
-
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const questions = [
     {
       field: "advisorContactPreference",
@@ -86,7 +86,10 @@ function GuardrailsSection({
   )
 
   const handleSubmit = async () => {
-    if (!allAnswered) return
+    // 1. Prevent action if already submitting or if not all answered
+    if (!allAnswered || isSubmitting) return
+
+    setIsSubmitting(true) // 2. Turn on loading sign
 
     try {
       const response = await fetch("/api/analyze-risk", {
@@ -111,6 +114,8 @@ function GuardrailsSection({
       )
     } catch (error) {
       console.error("Submit error:", error)
+      // 3. IMPORTANT: Reset loading so user can try again if it fails
+      setIsSubmitting(false) 
     }
   }
 
@@ -139,14 +144,22 @@ function GuardrailsSection({
 
         <button
           onClick={handleSubmit}
-          disabled={!allAnswered}
-          className={`px-6 py-3 rounded-lg ${
-            allAnswered
-              ? "bg-blue-600 text-white"
-              : "bg-gray-300 cursor-not-allowed"
+          disabled={!allAnswered || isSubmitting}
+          className={`px-6 py-3 rounded-lg flex items-center gap-2 transition-all ${
+            allAnswered && !isSubmitting
+              ? "bg-blue-600 text-white hover:opacity-90"
+              : "bg-gray-300 text-gray-500 cursor-not-allowed"
           }`}
         >
-          Submit Assessment →
+          {isSubmitting ? (
+            <>
+              {/* Simple CSS Spinner */}
+              <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              Analyzing...
+            </>
+          ) : (
+            "Submit Assessment →"
+          )}
         </button>
       </div>
     </div>
