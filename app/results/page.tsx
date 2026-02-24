@@ -52,21 +52,47 @@ function ResultsContent() {
 
     const hasFetched = useRef(false)
     useEffect(() => {
-      if (!result || hasFetched.current) return
-      hasFetched.current = true
-      const generateAIReport = async () => {
-        setLoadingAI(true)
-        try {
-          const res = await fetch("/api/generate-report", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(result),
-          })
-          if (res.ok) setAiReport(await res.json())
-        } catch (err) { console.error(err) } finally { setLoadingAI(false) }
-      }
-      generateAIReport()
-    }, [result])
+        if (!result || hasFetched.current) return
+        hasFetched.current = true
+
+        const generateAIReport = async () => {
+          setLoadingAI(true)
+
+          try {
+            // 1️⃣ Generate AI Report
+            const res = await fetch("/api/generate-report", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(result),
+            })
+
+            if (res.ok) {
+              const aiData = await res.json()
+              setAiReport(aiData)
+
+              // 2️⃣ 🔥 Sync to HubSpot AFTER report generates
+              await fetch("/api/hubspot-sync", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  email: profile.email,
+                  firstName: profile.firstName,
+                  lastName: profile.lastName,
+                  investableAssets: profile.investableAssets, // adjust if named differently
+                }),
+              })
+            }
+
+          } catch (err) {
+            console.error("Results error:", err)
+          } finally {
+            setLoadingAI(false)
+          }
+        }
+
+        generateAIReport()
+      }, [result])
+
 
     if (!data || !result) return <div className="p-10 text-center text-gray-400">Analysis not found.</div>
 
