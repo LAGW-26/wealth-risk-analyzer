@@ -37,7 +37,7 @@ function QuestionCard({
 
 type GuardrailsProps = {
   formData: Record<string, any>
-  updateField: (field: string, value: number) => void
+  updateField: (field: string, value: any) => void
   prevStep: () => void
 }
 
@@ -109,7 +109,8 @@ function GuardrailsSection({
       const result = JSON.parse(text)
 
       // Mapping IDs to the exact HubSpot Dropdown strings
-      const assetLabels = {
+      // Add the [key: string]: string type definition here
+      const assetLabels: { [key: string]: string } = {
         "1": "Under $100k",
         "2": "$100k-$500k",
         "3": "$500k-$1M",
