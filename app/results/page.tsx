@@ -317,36 +317,35 @@ function ResultsContent() {
               {/* Background design flair */}
               <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
             </div>
-            {/* DISCOVERY CALL CTA */}
-            <div className="mt-20 mb-10">
-              <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-14 rounded-[3rem] text-white text-center shadow-2xl relative overflow-hidden">
-
-                <h3 className="text-3xl font-bold mb-6 tracking-tight">
-                  Ready to Align Strategy With Insight?
+              {/* DISCOVERY CALL CTA - MINIMALIST & PROFESSIONAL */}
+              <div className="mt-24 mb-10 pt-16 border-t border-slate-100 text-center">
+                <div className="inline-block px-4 py-1 rounded-full bg-blue-50 text-blue-600 text-[10px] font-black uppercase tracking-[0.3em] mb-6">
+                  Strategic Next Step
+                </div>
+                
+                <h3 className="text-4xl font-black mb-6 tracking-tight text-slate-900 italic uppercase">
+                  Align Strategy With Insight
                 </h3>
 
-                <p className="text-lg text-blue-100 max-w-2xl mx-auto leading-relaxed mb-10">
-                  Your assessment highlights important behavioral and financial considerations.
-                  Let’s discuss how these insights may inform a thoughtful retirement strategy aligned with your goals.
+                <p className="text-lg text-slate-500 max-w-2xl mx-auto leading-relaxed mb-10 font-light">
+                  Your assessment highlights important behavioral and financial considerations. 
+                  Let’s discuss how these insights can inform a <span className="text-slate-900 font-medium">thoughtful retirement strategy</span> specifically aligned with your goals.
                 </p>
 
-                <a
-                  href="https://GWMRetirementSimplified.as.me/?appointmentType=82720673"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block bg-white text-blue-700 font-bold px-10 py-4 rounded-2xl shadow-lg hover:scale-105 active:scale-95 transition-all tracking-wide uppercase text-sm"
-                >
-                  Schedule Your Complimentary Discovery Call
-                </a>
-
-                <p className="text-xs text-blue-200 mt-6 uppercase tracking-widest">
-                  30 Minutes · No Obligation · Strategic Clarity
-                </p>
-
-                {/* Soft background flare */}
-                <div className="absolute top-0 right-0 w-72 h-72 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
+                <div className="flex flex-col items-center">
+                  <a
+                    href="https://GWMRetirementSimplified.as.me/?appointmentType=82720673"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative inline-flex items-center justify-center bg-slate-900 text-white font-bold px-12 py-5 rounded-2xl shadow-xl hover:bg-blue-600 transition-all duration-300 active:scale-95 tracking-widest uppercase text-xs"
+                  >
+                    Schedule Your Discovery Call
+                    <svg className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </a>
+                </div>
               </div>
-            </div>
             {/* FOOTER */}
             <div className="mt-16 text-center border-t border-slate-100 pt-10">
               <p className="text-[9px] text-slate-300 font-bold uppercase tracking-[0.5em] max-w-md mx-auto">
