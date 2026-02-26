@@ -101,16 +101,38 @@ function GuardrailsSection({
       })
 
       const text = await response.text()
-      console.log("Raw API response:", text)
-
+      
       if (!response.ok) {
         throw new Error(text)
       }
 
       const result = JSON.parse(text)
 
+      // Mapping IDs to the exact HubSpot Dropdown strings
+      const assetLabels = {
+        "1": "Under $100k",
+        "2": "$100k-$500k",
+        "3": "$500k-$1M",
+        "4": "$1M-$5M",
+        "5": "$5m+"
+      };
+
+      // 🔥 ENRICH DATA: Carry your formData into the result 
+      // Mapping the numeric ID to the text string HubSpot expects
+      const enrichedResult = {
+        ...result,
+        profile: {
+          ...result.profile,
+          email: formData.email,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          // Converts "2" to "$100k-$500k"
+          investableAssets: assetLabels[formData.assets] || formData.assets, 
+        }
+      }
+
       router.push(
-        `/results?data=${encodeURIComponent(JSON.stringify(result))}`
+        `/results?data=${encodeURIComponent(JSON.stringify(enrichedResult))}`
       )
     } catch (error) {
       console.error("Submit error:", error)

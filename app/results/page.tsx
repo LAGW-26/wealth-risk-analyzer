@@ -50,48 +50,71 @@ function ResultsContent() {
       try { return JSON.parse(data) } catch { return null }
     }, [data])
 
+
     const hasFetched = useRef(false)
+
     useEffect(() => {
+        // 1. Basic validation and duplicate prevention
         if (!result || hasFetched.current) return
+        // 🔥 ADD THIS LOG HERE
+        console.log("Full Result Object:", result);
+        const { profile } = result
+        
+        // 2. Ensure we actually have data before trying to sync
+        if (!profile?.email) {
+            console.error("HubSpot Sync skipped: No email found in profile.")
+            return
+        }
+
         hasFetched.current = true
 
         const generateAIReport = async () => {
-          setLoadingAI(true)
+            setLoadingAI(true)
 
-          try {
-            // 1️⃣ Generate AI Report
-            const res = await fetch("/api/generate-report", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(result),
-            })
+            try {
+                // 1️⃣ Generate AI Report
+                const res = await fetch("/api/generate-report", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(result),
+                })
 
-            if (res.ok) {
-              const aiData = await res.json()
-              setAiReport(aiData)
+                if (res.ok) {
+                    const aiData = await res.json()
+                    setAiReport(aiData)
 
-              // 2️⃣ 🔥 Sync to HubSpot AFTER report generates
-              await fetch("/api/hubspot-sync", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  email: profile.email,
-                  firstName: profile.firstName,
-                  lastName: profile.lastName,
-                  investableAssets: profile.investableAssets, // adjust if named differently
-                }),
-              })
+                    // 2️⃣ Sync to HubSpot using your Dropdown strings
+                    console.log("Attempting HubSpot Sync with:", {
+                        email: profile.email,
+                        firstName: profile.firstName,
+                        lastName: profile.lastName,
+                        investableAssets: profile.investableAssets
+                    })
+
+                    const hubRes = await fetch("/api/hubspot-sync", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            email: profile.email,
+                            firstName: profile.firstName,
+                            lastName: profile.lastName,
+                            investableAssets: profile.investableAssets, 
+                        }),
+                    })
+
+                    const hubStatus = await hubRes.json()
+                    console.log("HubSpot Sync Result:", hubStatus)
+                }
+
+            } catch (err) {
+                console.error("Results page error:", err)
+            } finally {
+                setLoadingAI(false)
             }
-
-          } catch (err) {
-            console.error("Results error:", err)
-          } finally {
-            setLoadingAI(false)
-          }
         }
 
         generateAIReport()
-      }, [result])
+    }, [result])
 
 
     if (!data || !result) return <div className="p-10 text-center text-gray-400">Analysis not found.</div>
@@ -294,7 +317,36 @@ function ResultsContent() {
               {/* Background design flair */}
               <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
             </div>
+            {/* DISCOVERY CALL CTA */}
+            <div className="mt-20 mb-10">
+              <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-14 rounded-[3rem] text-white text-center shadow-2xl relative overflow-hidden">
 
+                <h3 className="text-3xl font-bold mb-6 tracking-tight">
+                  Ready to Align Strategy With Insight?
+                </h3>
+
+                <p className="text-lg text-blue-100 max-w-2xl mx-auto leading-relaxed mb-10">
+                  Your assessment highlights important behavioral and financial considerations.
+                  Let’s discuss how these insights may inform a thoughtful retirement strategy aligned with your goals.
+                </p>
+
+                <a
+                  href="https://GWMRetirementSimplified.as.me/?appointmentType=82720673"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block bg-white text-blue-700 font-bold px-10 py-4 rounded-2xl shadow-lg hover:scale-105 active:scale-95 transition-all tracking-wide uppercase text-sm"
+                >
+                  Schedule Your Complimentary Discovery Call
+                </a>
+
+                <p className="text-xs text-blue-200 mt-6 uppercase tracking-widest">
+                  30 Minutes · No Obligation · Strategic Clarity
+                </p>
+
+                {/* Soft background flare */}
+                <div className="absolute top-0 right-0 w-72 h-72 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
+              </div>
+            </div>
             {/* FOOTER */}
             <div className="mt-16 text-center border-t border-slate-100 pt-10">
               <p className="text-[9px] text-slate-300 font-bold uppercase tracking-[0.5em] max-w-md mx-auto">
